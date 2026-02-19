@@ -3,7 +3,7 @@ import { writable } from 'svelte/store';
 const STORAGE_KEY = 'athan-settings';
 
 const DEFAULTS = {
-  method: 'MuslimWorldLeague',
+  method: 'NorthAmerica',
   madhab: 'Shafi',
   notifications: false,
 };
