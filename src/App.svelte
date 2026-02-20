@@ -50,6 +50,7 @@
 
   <footer>
     <p>Privacy-first. Nothing ever leaves your device.</p>
+    <p><a href="https://github.com/elmehalawi/athanclock" target="_blank" rel="noopener noreferrer">GitHub</a></p>
   </footer>
 </main>
 
@@ -127,5 +128,14 @@
 
   footer p {
     margin: 0;
+  }
+
+  footer a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  footer a:hover {
+    text-decoration: underline;
   }
 </style>
