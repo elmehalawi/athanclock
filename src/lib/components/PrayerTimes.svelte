@@ -15,8 +15,18 @@
   const PRAYER_ORDER = ['fajr', 'sunrise', 'dhuhr', 'asr', 'maghrib', 'isha'];
 
   let countdown = $state('');
+  let hijriDate = $state('');
   let countdownInterval;
   let midnightTimeout;
+
+  function updateHijriDate() {
+    hijriDate = new Intl.DateTimeFormat('en-US', {
+      calendar: 'islamic-umalqura',
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+    }).format(new Date());
+  }
 
   function formatTime(date, tz) {
     if (!date) return '--:--';
@@ -50,11 +60,13 @@
     tomorrow.setHours(24, 0, 5, 0);
     const delay = tomorrow.getTime() - now.getTime();
     midnightTimeout = setTimeout(() => {
+      updateHijriDate();
       scheduleMidnightRefresh();
     }, delay);
   }
 
   onMount(() => {
+    updateHijriDate();
     scheduleMidnightRefresh();
   });
 
@@ -77,6 +89,9 @@
   <div class="prayer-times">
     <div class="header">
       <h2>{$location?.name} <span class="cc">{$location?.cc}</span></h2>
+      {#if hijriDate}
+        <p class="hijri-date">{hijriDate}</p>
+      {/if}
       {#if $prayers.nextPrayer}
         <p class="countdown">
           Next: <strong>{PRAYER_LABELS[$prayers.nextPrayer.name]}</strong> in {countdown}
@@ -116,6 +131,12 @@
     opacity: 0.5;
     font-size: 0.85rem;
     margin-left: 0.5rem;
+  }
+
+  .hijri-date {
+    margin: 0.25rem 0 0;
+    font-size: 0.9rem;
+    opacity: 0.6;
   }
 
   .countdown {
