@@ -1,4 +1,4 @@
-const CACHE_NAME = 'athan-clock-v1';
+const CACHE_NAME = 'athan-clock-v2';
 
 const PRECACHE_URLS = ['/', '/index.html'];
 
@@ -21,21 +21,46 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
+  const { request } = event;
+  const url = new URL(request.url);
+
+  // Network firewall: only allow same-origin requests.
+  if (url.origin !== self.location.origin) {
+    event.respondWith(new Response('', { status: 444, statusText: 'Blocked' }));
+    return;
+  }
+
+  // Network-first for the HTML document so new deploys are picked up
+  // immediately; fall back to the cached copy when offline. (The whole app is
+  // inlined into this one document, so this keeps it both fresh and offline.)
+  const isDocument =
+    request.mode === 'navigate' ||
+    url.pathname === '/' ||
+    url.pathname === '/index.html';
+
+  if (isDocument) {
+    event.respondWith(
+      fetch(request)
+        .then((response) => {
+          if (response.ok) {
+            const clone = response.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put('/', clone));
+          }
+          return response;
+        })
+        .catch(() => caches.match(request).then((cached) => cached || caches.match('/')))
+    );
+    return;
+  }
+
+  // Cache-first for other same-origin assets, caching new responses.
   event.respondWith(
-    caches.match(event.request).then((cached) => {
+    caches.match(request).then((cached) => {
       if (cached) return cached;
-
-      // Network firewall: only allow same-origin requests
-      const url = new URL(event.request.url);
-      if (url.origin !== self.location.origin) {
-        return new Response('', { status: 444, statusText: 'Blocked' });
-      }
-
-      // For same-origin requests not in cache, try network and cache the response
-      return fetch(event.request).then((response) => {
+      return fetch(request).then((response) => {
         if (response.ok) {
           const clone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
+          caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
         }
         return response;
       });
