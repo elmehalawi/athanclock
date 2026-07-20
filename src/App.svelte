@@ -6,6 +6,7 @@
   import CitySearch from './lib/components/CitySearch.svelte';
   import PrayerTimes from './lib/components/PrayerTimes.svelte';
   import Settings from './lib/components/Settings.svelte';
+  import QiblaCompass from './lib/components/QiblaCompass.svelte';
 
   let showSettings = $state(false);
 
@@ -29,6 +30,8 @@
       <CitySearch />
     </section>
   {:else}
+    <QiblaCompass />
+
     <section class="compact-search">
       <CitySearch />
     </section>

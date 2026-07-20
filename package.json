@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "node scripts/check-wmm.js && vite build",
     "preview": "vite preview"
   },
   "devDependencies": {
@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "adhan": "^4.4.3",
-    "fuse.js": "^7.1.0"
+    "fuse.js": "^7.1.0",
+    "geomagnetism": "^0.2.0"
   }
 }

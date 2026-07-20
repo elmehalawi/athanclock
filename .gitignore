@@ -26,3 +26,4 @@ dist-ssr
 # GeoNames temp files
 cities15000.*
 readme.txt
+.playwright-mcp/
